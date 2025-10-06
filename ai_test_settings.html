@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用者設定</title>
+    <link rel="stylesheet" href="test.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <main class="settings-page-layout">
+        <div class="settings-wrapper">
+            
+            <div class="settings-sidebar">
+                
+                <a href="ai_test.html" title="回儀表板" class="home-link home-icon-top">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+
+                <div class="profile-display-area">
+                    <div class="profile-pic large"></div>
+                    <p class="user-name large">USER NAME</p>
+                </div>
+
+                <div class="sidebar-footer">
+                    <a href="#" title="登出" class="logout-link">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> 登出
+                    </a>
+                </div>
+            </div>
+            
+            <div class="settings-content-area">
+                
+                <div class="setting-block basic-setting">
+                    <h2 class="handwritten-title">基本設定</h2>
+                    <div class="setting-item">
+                        <span class="setting-label">帳號：</span>
+                        <div class="action-button login-button"><span>登入解鎖</span></div>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">密碼：</span>
+                        <input type="password" value="********" class="handwritten-input">
+                    </div>
+                </div>
+
+                <hr class="handwritten-divider">
+
+                <div class="setting-block health-target">
+                    <h2 class="handwritten-title">健康目標</h2>
+                    <div class="setting-item">
+                        <span class="setting-label">身高：</span>
+                        <input type="number" value="160.0" class="handwritten-input small"> cm
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">體重：</span>
+                        <input type="number" value="60.00" class="handwritten-input small"> kg
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">每日卡路里目標：</span>
+                        <input type="number" value="2000" class="handwritten-input small"> kcal
+                    </div>
+                </div>
+                
+                <hr class="handwritten-divider">
+                
+                <div class="logout-full-button hidden-on-navbar">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> 登出
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
