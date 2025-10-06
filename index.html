@@ -1,0 +1,213 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" href="https://shaix0.github.io/Lab3_hw/img/com.webp" type="image/x-icon">
+  <link rel="stylesheet" href="/Lab3_hw/style.css" type="text/css" />
+   
+  <title>Lab3_hw</title>
+
+
+</head>
+
+<body>
+  <noscript>
+    <style>
+      .loading{
+        opacity: 0;
+      }
+    </style> 
+    <div class="no-js-message">
+      <p style=" position: fixed;
+                 z-index: 2;
+                 color: white;
+                 background: #0000005e;
+                 padding: 5px 0 5px; 
+                 bottom: 5%;
+                 text-align: center;
+                 width: 100vw; ">您的瀏覽器不支援 JavaScript，或 JavaScript 已被禁用。請啟用 JavaScript 以獲取完整體驗。</p>
+    </div>
+  </noscript>
+
+  <input type="checkbox" id="click-menu" />
+  <header>
+    <nav class="menu">
+      <label for="click-menu" class="menu-btn"> MENU </label>
+      <div class="list-bg hide"></div>
+      <div class="list-w">
+        <ul class="list">
+          <li class="l-item">
+            <a class="list-link" href="https://elearn2.fju.edu.tw/" target="_blank">
+              <p class="list-text"> 輔大TronClass </p>
+            </a>
+          </li>
+          <li class="l-item">
+            <a class="list-link" id="mode" href="#">
+              <p class="list-text" id="m-text"> 深色模式 </p>
+            </a>
+          </li>
+          <li class="l-item">
+            <a class="list-link" id="insert" href="#">
+              <p class="list-text"> 加入工具 </p>
+            </a>
+          </li>
+          <li class="l-item">
+            <a class="list-link" id="share" href="#">
+              <p class="list-text"> 分享 </p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="loading">
+    <img src="/Lab3_hw/img/com.webp">
+    <p> LOADING... </p>
+  </div>
+  
+  <div>
+    <div class="insert-bg hide"></div>
+    <div id="insert-window" class="hide">
+      <span id="insert-w-close">
+        <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+        </svg>
+      </span>
+      <div class="insert-field">
+        <label class="insert-t">標題：</label>
+        <input type="text" class="insert-input" id="insert-title">
+      </div>
+      <div class="insert-field">
+        <label class="insert-t">說明：</label>
+        <textarea class="insert-input" id="insert-sub"></textarea>
+      </div>
+      <div class="insert-field">
+        <label class="insert-t">網頁連結：</label>
+        <input type="text" class="insert-input" id="insert-link">
+      </div>
+      <div class="insert-field">
+        <label class="insert-t">圖片連結：</label>
+        <input type="text" class="insert-input" id="insert-img">
+      </div>
+      <button id="insert-submit">確定</button>
+    </div>
+    
+    <div id="copy-alert" class="hide">已複製連結</div>
+  </div>
+
+  <div class="mid-text">
+    <p class="title">
+      學習工具分享
+    </p>
+    <p class="sub">
+      Web Lab3：Personal Page with Github Page
+    </p>
+  </div>
+  <div class="card-w">
+    <div class="card">
+      <a href="https://developer.mozilla.org/zh-TW/" target="_blank">
+        <img class="c-img" src="https://developer.mozilla.org/mdn-social-share.d893525a4fb5fb1f67a2.png" />
+        <p class="c-title"> MDN Web Docs </p>
+        <p class="c-sub">
+          你可以在裡面找到HTML、CSS、JavaScript的各種用法，除了基本的教學之外，有一部分內容還有互動式展示，可以馬上做測試。
+        </p>
+      </a>
+    </div>
+    <div class="card">
+      <a href="https://www.ifreesite.com/editor/" target="_blank">
+        <img class="c-img" src="../Lab3_hw/img/tool.png" />
+        <p class="c-title"> 線上HTML編輯器 </p>
+        <p class="c-sub">
+          除了可以預覽網頁，還提供一些按鈕可以快速加入文字區塊、核取方塊等等元素，也可以用來測試JavaScript。
+        </p>
+      </a>
+    </div>
+    <div class="card">
+      <a href="https://leetcode.com/problemset/" target="_blank">
+        <img class="c-img" src="https://miro.medium.com/v2/resize:fit:1008/1*VOQU8CuPG34Gsd1yJCadOQ.png" />
+        <p class="c-title"> LeetCode </p>
+        <p class="c-sub">
+          大家熟悉的刷題網站，題目主要是資料結構和演算法，部分題目有詳解或是講解影片，每題都有討論區可以參考其他人分享的解法。
+        </p>
+      </a>
+    </div>
+  </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+  $(window).on('load', function(){
+    $(".loading").addClass("hide");
+  });
+        
+  $("#click-menu").on('click', function(){
+    $(".list-bg").toggleClass("hide");
+  });
+    
+  var flag = false;
+  $("#mode").on('click', function() {
+    $("body").toggleClass("dark");
+    flag = !flag;
+    $("#m-text").text(flag ? "淺色模式" : "深色模式");
+  });
+  $("#share").on('click', function() {
+    var fixedText = "https://shaix0.github.io/Lab3_hw";
+
+    navigator.clipboard.writeText(fixedText).then(function() {
+      $("#copy-alert").toggleClass("hide");
+    }).catch(function(error) {
+      console.error("複製錯誤: ", error);
+    });
+
+    setTimeout(function() {
+      $("#copy-alert").toggleClass("hide");
+    }, 1500);
+  });
+
+  $("#insert, #insert-w-close").on('click', function() {
+    $("#insert-window, .insert-bg").toggleClass("hide");
+
+    if ($(".insert-bg").attr("style") !== "pointer-events: auto;") {
+      $(".insert-bg, #insert-window").attr("style", "pointer-events: auto;");
+    }
+    else {
+      $(".insert-bg, #insert-window").attr("style", "");
+    }
+  });
+
+  $("#insert-submit").on('click', function() {
+    //取得輸入內容
+    const title = $("#insert-title").val();
+    const description = $("#insert-sub").val();
+    const link = $("#insert-link").val();
+    const imgUrl = $("#insert-img").val();
+  
+    //確認所有欄位被填寫
+    if (title.trim() === "" || description.trim() === "" || imgUrl.trim() === "" || link.trim() === "") {
+      alert("請填寫所有欄位");
+      return;
+    }
+  
+    //加入新的card
+    const newCardHtml = `
+        <div class="card">
+          <a href="${link}" target="_blank">
+            <img class="c-img" src="${imgUrl}" />
+            <p class="c-title">${title}</p>
+            <p class="c-sub">${description}</p>
+          </a>
+        </div>
+     ` ;
+    $(".card-w").append(newCardHtml);
+  
+    //清空內容後關閉視窗
+    $("#insert-title").val("");
+    $("#insert-sub").val("");
+    $("#insert-link").val("");
+    $("#insert-img").val("");
+    $("#insert-window, .insert-bg, .list-bg").toggleClass("hide");
+    $(".insert-bg, #insert-window").attr("style", "");
+    $("#click-menu").prop("checked", false);
+  });
+
+</script>
