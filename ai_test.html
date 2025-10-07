@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>營養分析介面</title>
+    <title>AI 營養追蹤儀表板</title>
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -55,83 +55,104 @@
 </head>
 <body>
     <div id="app">
-        <h1 class="text-4xl font-extrabold text-teal-700 text-center">營養分析介面</h1>
-        
-        <!-- 狀態資訊 -->
-        <div class="flex justify-between items-center text-sm text-gray-500 border-b pb-3">
-            <span id="connectionStatus" class="font-medium text-amber-600">應用程式已啟動 (使用 Local Storage 儲存)</span>
-        </div>
-
-        <!-- 儀表板主要區域 -->
-        <div class="grid lg:grid-cols-3 gap-8">
+        <!-- 主儀表板視圖容器 -->
+        <div id="mainDashboard" class="">
+            <h1 class="text-4xl font-extrabold text-teal-700 text-center">AI 營養追蹤儀表板</h1>
             
-            <!-- 左側：圖片上傳與分析結果 (2/3 寬) -->
-            <div class="lg:col-span-2 space-y-6">
-                <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">1. 餐點 AI 分析</h2>
+            <!-- 狀態資訊 -->
+            <div class="flex justify-between items-center text-sm text-gray-500 border-b pb-3">
+                <span id="connectionStatus" class="font-medium text-amber-600">應用程式已啟動 (使用 Local Storage 儲存)</span>
+            </div>
 
-                <!-- 圖片輸入和分析按鈕 -->
-                <div class="flex flex-col md:flex-row gap-4 items-center p-4 bg-gray-50 rounded-xl shadow-inner">
-                    <label for="fileInput" class="file-label w-full md:w-auto flex-grow">
-                        <div class="py-3 px-6 text-center text-sm font-semibold rounded-full border-2 border-teal-500 text-teal-700 bg-teal-50 hover:bg-teal-100 transition duration-200">
-                            <i class="fas fa-camera mr-2"></i> 選擇餐點照片
-                        </div>
-                        <input type="file" id="fileInput" accept="image/*" class="file-input"/>
-                    </label>
-
-                    <button 
-                        id="analyzeButton" 
-                        disabled
-                        class="w-full md:w-auto py-3 px-6 text-white font-bold rounded-full shadow-md transition duration-200 
-                        bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[150px]"
-                    >
-                        <svg id="loadingIndicator" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        開始分析
-                    </button>
-                </div>
+            <!-- 儀表板主要區域 -->
+            <div class="grid lg:grid-cols-3 gap-8">
                 
-                <!-- 圖片預覽 & 分析結果 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <!-- 圖片預覽 -->
-                        <div class="relative bg-gray-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
-                            <img id="imagePreview" src="" alt="餐點預覽" class="hidden max-h-full max-w-full object-cover">
-                            <p id="placeholderText" class="text-gray-400">上傳圖片以開始分析</p>
-                        </div>
-                        
-                        <!-- 分析結果 -->
-                        <div>
-                            <h3 class="text-xl font-semibold text-teal-600 mb-3">AI 分析報告</h3>
-                            <div id="analysisResult" class="min-h-[14rem] space-y-4">
-                                <p class="text-gray-500 italic">分析結果將顯示在這裡...</p>
+                <!-- 左側：圖片上傳與分析結果 (2/3 寬) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">1. 餐點 AI 分析</h2>
+
+                    <!-- 圖片輸入和分析按鈕 -->
+                    <div class="flex flex-col md:flex-row gap-4 items-center p-4 bg-gray-50 rounded-xl shadow-inner">
+                        <label for="fileInput" class="file-label w-full md:w-auto flex-grow">
+                            <div class="py-3 px-6 text-center text-sm font-semibold rounded-full border-2 border-teal-500 text-teal-700 bg-teal-50 hover:bg-teal-100 transition duration-200">
+                                <i class="fas fa-camera mr-2"></i> 選擇餐點照片
+                            </div>
+                            <input type="file" id="fileInput" accept="image/*" class="file-input"/>
+                        </label>
+
+                        <button 
+                            id="analyzeButton" 
+                            disabled
+                            class="w-full md:w-auto py-3 px-6 text-white font-bold rounded-full shadow-md transition duration-200 
+                            bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[150px]"
+                        >
+                            <svg id="loadingIndicator" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            開始分析
+                        </button>
+                    </div>
+                    
+                    <!-- 圖片預覽 & 分析結果 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- 圖片預覽 -->
+                            <div class="relative bg-gray-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
+                                <img id="imagePreview" src="" alt="餐點預覽" class="hidden max-h-full max-w-full object-cover">
+                                <p id="placeholderText" class="text-gray-400">上傳圖片以開始分析</p>
                             </div>
                             
-                            <!-- 紀錄按鈕 (分析成功後顯示) -->
-                            <button 
-                                id="logMealButton" 
-                                class="w-full py-2 mt-4 px-4 text-white font-bold rounded-lg shadow-md transition duration-200 
-                                bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed hidden"
-                            >
-                                <i class="fas fa-save mr-2"></i> 紀錄餐點
-                            </button>
+                            <!-- 分析結果 -->
+                            <div>
+                                <h3 class="text-xl font-semibold text-teal-600 mb-3">AI 分析報告</h3>
+                                <div id="analysisResult" class="min-h-[14rem] space-y-4">
+                                    <!-- 移除紀錄按鈕，結果區域空間增大 -->
+                                    <p class="text-gray-500 italic">分析結果將顯示在這裡...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
+                <!-- 右側：我的餐點日誌 (1/3 寬) -->
+                <div class="lg:col-span-1 flex flex-col h-full"> <!-- 調整結構以便底部按鈕固定 -->
+                    <h2 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">2. 我的餐點日誌</h2>
+                    
+                    <!-- 食物日誌卡片 (Food Log Card) - 加上滾動條和彈性生長 -->
+                    <div id="foodLogCard" class="space-y-4 flex-grow overflow-y-auto max-h-[70vh]">
+                        <p class="text-gray-500 text-center italic" id="emptyLogMessage">日誌目前沒有餐點紀錄。</p>
+                    </div>
 
-            <!-- 右側：我的餐點日誌 (1/3 寬) -->
-            <div class="lg:col-span-1">
-                <h2 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">2. 我的餐點</h2>
-                
-                <!-- 食物日誌卡片 (Food Log Card) -->
-                <div id="foodLogCard" class="space-y-4">
-                    <p class="text-gray-500 text-center italic" id="emptyLogMessage">日誌目前沒有餐點紀錄。</p>
+                    <!-- 查看歷史紀錄按鈕 (位於右下角) -->
+                    <button 
+                        id="exportLogButton" 
+                        disabled
+                        class="mt-4 w-full py-3 px-6 text-white font-bold rounded-lg shadow-xl transition duration-200 
+                        bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                    >
+                        <i class="fas fa-list-alt mr-2"></i> 查看歷史紀錄
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- 歷史紀錄視圖容器 (預設隱藏) -->
+        <div id="historyPage" class="hidden w-full space-y-8">
+            <div class="flex justify-between items-center border-b pb-4">
+                <h2 class="text-3xl font-bold text-teal-700">歷史餐點紀錄</h2>
+                <button id="backToDashboardButton" class="py-2 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> 返回儀表板
+                </button>
+            </div>
+            
+            <div id="historyList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- History items will be rendered here -->
+            </div>
+            <p id="historyEmptyMessage" class="text-gray-500 text-center italic mt-10 hidden">歷史紀錄為空。</p>
+        </div>
+
 
         <!-- 訊息彈出視窗 -->
         <div id="messageBox" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
@@ -144,7 +165,7 @@
     </div>
 
     <script type="module">
-        // 此版本使用 Local Storage 儲存日誌，以實現餐點追蹤功能。
+        // 此版本使用 Local Storage 儲存日誌，並實現單頁應用 (SPA) 視圖切換功能。
 
         // --- DOM 元素 ---
         const fileInput = document.getElementById('fileInput');
@@ -153,15 +174,22 @@
         const analyzeButton = document.getElementById('analyzeButton');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const analysisResult = document.getElementById('analysisResult');
-        const logMealButton = document.getElementById('logMealButton');
+        // const logMealButton = document.getElementById('logMealButton'); // 紀錄按鈕已移除
         const foodLogCard = document.getElementById('foodLogCard');
         const emptyLogMessage = document.getElementById('emptyLogMessage');
+        
+        // 新增的 DOM 元素
+        const exportLogButton = document.getElementById('exportLogButton'); 
+        const mainDashboard = document.getElementById('mainDashboard');
+        const historyPage = document.getElementById('historyPage');
+        const historyList = document.getElementById('historyList');
+        const backToDashboardButton = document.getElementById('backToDashboardButton');
 
         // --- 全域變數 ---
         // <<<< 請在這裡貼上您的 Gemini API 金鑰 >>>>
         const apiKey = "AIzaSyCQ51NrtTcRgYTuGNAgGVL1bkbaV-oTR5g"; 
         let base64Image = null; // 儲存當前 Base64 圖片數據
-        let lastAnalysisData = null; // 儲存最近一次的 AI 分析結果
+        // lastAnalysisData 變數已不再需要，因為紀錄將在分析完成後立即自動儲存。
 
         // --- 輔助函數：替代 alert() ---
         function showMessage(title, message, isError = true) {
@@ -181,6 +209,22 @@
             messageBox.classList.remove('hidden');
             messageBox.classList.add('flex');
         }
+        
+        // --- SPA 視圖切換函數 ---
+        function switchView(viewId) {
+            if (viewId === 'dashboard') {
+                mainDashboard.classList.remove('hidden');
+                historyPage.classList.add('hidden');
+                // 確保返回時主日誌是更新的
+                renderFoodLog(); 
+            } else if (viewId === 'history') {
+                mainDashboard.classList.add('hidden');
+                historyPage.classList.remove('hidden');
+                // 渲染歷史頁面內容
+                renderHistoryPage(); 
+            }
+        }
+
 
         // --- I. 圖像處理與 AI 分析 ---
 
@@ -204,9 +248,8 @@
             
             // 清除之前的狀態
             analysisResult.innerHTML = `<p class="text-gray-500 italic">分析結果將顯示在這裡...</p>`;
-            logMealButton.classList.add('hidden');
-            lastAnalysisData = null;
-
+            // logMealButton.classList.add('hidden'); // 移除對已移除按鈕的參考
+            // lastAnalysisData = null; // 移除對此變數的清除，因為不再需要儲存待確認的資料
 
             if (file) {
                 // 圖片預覽
@@ -249,10 +292,8 @@
 
             analysisResult.innerHTML = `<div class="text-center py-8"><svg class="animate-spin h-8 w-8 text-teal-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><p class="mt-2 text-teal-500">AI 正在分析餐點中...</p></div>`;
             analyzeButton.disabled = true;
-            logMealButton.classList.add('hidden');
             loadingIndicator.classList.remove('hidden');
-            lastAnalysisData = null;
-
+            
             try {
                 // 提示詞要求 AI 輸出指定格式的 JSON，並要求分析摘要為繁體中文
                 const prompt = "Please analyze this meal image. Identify the main dish(es) and estimate the nutritional content (Calories, Protein, Fat, Carbs) in grams. Provide the result ONLY as a JSON object that adheres to the following structure. The analysis_summary should be a concise description of the nutritional value in Traditional Chinese.\n\nStructure:\n{\n  \"dish_name\": \"string\",\n  \"calories\": \"number\",\n  \"protein_g\": \"number\",\n  \"fat_g\": \"number\",\n  \"carbs_g\": \"number\",\n  \"analysis_summary\": \"string\",\n  \"image_data\": \"base64 string of the image\" \n}";
@@ -335,16 +376,16 @@
                     }
                 }
                 
-                // 額外處理：由於 AI 不會回傳圖片 base64，我們自己將上傳的圖片 base64 加入結果
+                // 1. 解析 AI 數據
                 const mealData = JSON.parse(jsonText.trim()); 
                 mealData.image_data = base64Image;
                 mealData.timestamp = Date.now(); // 儲存時間戳記
                 
-                lastAnalysisData = mealData;
+                // 2. 自動儲存餐點到日誌
+                saveLogEntry(mealData); 
                 
-                // 顯示結果
+                // 3. 顯示結果
                 renderAnalysisResult(mealData);
-                logMealButton.classList.remove('hidden');
 
             } catch (error) {
                 console.error("AI 分析失敗:", error);
@@ -431,20 +472,73 @@
             if (entries.length === 0) {
                 emptyLogMessage.classList.remove('hidden');
                 foodLogCard.appendChild(emptyLogMessage);
+                exportLogButton.disabled = true; // 日誌為空時禁用查看按鈕
             } else {
                 emptyLogMessage.classList.add('hidden');
                 entries.forEach(meal => {
                     foodLogCard.appendChild(renderFoodEntry(meal));
                 });
+                exportLogButton.disabled = false; // 日誌有內容時啟用查看按鈕
             }
         }
+        
+        // 渲染歷史紀錄頁面
+        function renderHistoryPage() {
+            const entries = loadLogEntries();
+            historyList.innerHTML = '';
+            const historyEmptyMessage = document.getElementById('historyEmptyMessage');
+
+            if (entries.length === 0) {
+                historyEmptyMessage.classList.remove('hidden');
+                return;
+            }
+            historyEmptyMessage.classList.add('hidden');
+
+            entries.forEach(meal => {
+                const date = new Date(meal.timestamp).toLocaleString('zh-TW', { dateStyle: 'short', timeStyle: 'short' });
+                
+                const entry = document.createElement('div');
+                entry.className = 'bg-white p-4 rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition duration-150 transform hover:-translate-y-0.5';
+                entry.innerHTML = `
+                    <div class="flex items-start justify-between mb-2">
+                        <p class="text-lg font-bold text-teal-600">${meal.dish_name || '未識別餐點'}</p>
+                        <button data-timestamp="${meal.timestamp}" class="delete-btn-history text-red-400 hover:text-red-600 transition text-sm">刪除</button>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">${date}</p>
+                    <div class="info grid grid-cols-2 gap-y-1 text-sm font-medium">
+                        <p class="font-bold text-red-600 col-span-2">${Math.round(meal.calories || 0)} kcal</p>
+                        <span class="text-blue-600">蛋白質: ${(meal.protein_g || 0).toFixed(1)}g</span>
+                        <span class="text-yellow-600">脂肪: ${(meal.fat_g || 0).toFixed(1)}g</span>
+                        <span class="text-green-600 col-span-2">碳水化合物: ${(meal.carbs_g || 0).toFixed(1)}g</span>
+                    </div>
+                    <p class="notes text-gray-500 italic mt-3 text-xs line-clamp-2">${meal.analysis_summary || '無總結資訊。'}</p>
+                `;
+                
+                // 處理歷史頁面的刪除按鈕
+                entry.querySelector('.delete-btn-history').addEventListener('click', (e) => {
+                    const timestamp = e.currentTarget.getAttribute('data-timestamp');
+                    deleteLogEntry(parseInt(timestamp));
+                    // 刪除後自動刷新歷史頁面
+                    renderHistoryPage(); 
+                });
+
+                historyList.appendChild(entry);
+            });
+        }
+
 
         // 刪除日誌條目
         function deleteLogEntry(timestampToDelete) {
             let entries = loadLogEntries();
             entries = entries.filter(meal => meal.timestamp !== timestampToDelete);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-            renderFoodLog();
+            // 根據當前視圖刷新相應的列表
+            if (!historyPage.classList.contains('hidden')) {
+                 renderHistoryPage();
+            } else {
+                renderFoodLog();
+            }
+            
         }
 
         // 渲染分析結果到 UI (分析結果區塊)
@@ -462,22 +556,27 @@
                         <p class="font-semibold text-gray-700 mb-1">AI 營養總結：</p>
                         <p class="text-gray-600 italic text-sm">${data.analysis_summary || '無總結資訊。'}</p>
                     </div>
+                    <div class="text-sm text-center text-teal-500 pt-2">
+                         <i class="fas fa-check-circle mr-1"></i> 餐點已自動紀錄。
+                    </div>
                 </div>
             `;
         }
         
-        // --- III. 初始化 ---
+        // --- III. 初始化與事件綁定 ---
         
-        // 紀錄餐點按鈕事件
-        logMealButton.addEventListener('click', () => {
-            if (lastAnalysisData) {
-                saveLogEntry(lastAnalysisData);
-                logMealButton.classList.add('hidden'); // 儲存後隱藏按鈕
-            }
-        });
+        // 綁定：查看歷史紀錄按鈕事件
+        exportLogButton.addEventListener('click', () => switchView('history'));
 
-        // 載入時渲染日誌
-        window.onload = renderFoodLog; 
+        // 綁定：返回儀表板按鈕事件
+        backToDashboardButton.addEventListener('click', () => switchView('dashboard'));
+
+
+        // 應用程式載入時執行
+        window.onload = () => {
+             // 確保起始是儀表板視圖
+            switchView('dashboard');
+        };
     </script>
 </body>
 </html>
