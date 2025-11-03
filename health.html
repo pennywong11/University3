@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人健康追蹤儀表板</title>
+    <!-- 載入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 設定字體為 Inter，確保整體美觀 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        /* 隱藏預設的 input number 箭頭 */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+    <script>
+        // 模擬資料 (Mock Data)
+        let healthData = {
+            stepsToday: 8500,
+            stepsGoal: 10000,
+            weight: 75.2, // kg
+            height: 178, // cm (用於 BMI 計算)
+            sleepHours: 7.5,
+            sleepGoal: 8.0,
+            lastUpdate: new Date().toLocaleTimeString('zh-TW'),
+        };
+
+        /**
+         * 計算並返回 BMI 值。
+         * BMI = 體重 (kg) / (身高 (m) * 身高 (m))
+         */
+        function calculateBMI() {
+            const weight = healthData.weight;
+            const heightInMeters = healthData.height / 100;
+            if (heightInMeters > 0) {
+                return (weight / (heightInMeters * heightInMeters)).toFixed(1);
+            }
+            return 'N/A';
+        }
+
+        /**
+         * 根據步數目標計算進度百分比。
+         */
+        function getStepProgress() {
+            return Math.min(100, (healthData.stepsToday / healthData.stepsGoal) * 100).toFixed(0);
+        }
+
+        /**
+         * 渲染所有數據到儀表板上。
+         */
+        function renderDashboard() {
+            const stepProgress = getStepProgress();
+            const bmi = calculateBMI();
+            
+            // 1. 步數卡片
+            document.getElementById('steps-today').textContent = healthData.stepsToday.toLocaleString('zh-TW');
+            document.getElementById('steps-goal').textContent = healthData.stepsGoal.toLocaleString('zh-TW');
+            document.getElementById('step-progress-bar').style.width = `${stepProgress}%`;
+            document.getElementById('step-progress-bar').textContent = `${stepProgress}%`;
+            document.getElementById('step-progress-bar').classList.toggle('bg-green-500', stepProgress >= 100);
+            document.getElementById('step-progress-bar').classList.toggle('bg-blue-500', stepProgress < 100);
+
+            // 2. 體重卡片
+            document.getElementById('weight-value').textContent = healthData.weight.toFixed(1);
+            document.getElementById('bmi-value').textContent = bmi;
+            document.getElementById('height-value').textContent = healthData.height;
+
+            // 3. 睡眠卡片
+            const sleepProgress = Math.min(100, (healthData.sleepHours / healthData.sleepGoal) * 100).toFixed(0);
+            document.getElementById('sleep-hours').textContent = healthData.sleepHours.toFixed(1);
+            document.getElementById('sleep-goal').textContent = healthData.sleepGoal.toFixed(1);
+            document.getElementById('sleep-status').textContent = healthData.sleepHours >= healthData.sleepGoal ? '（目標達成！）' : '（需再加油）';
+            
+            // 4. 更新時間
+            document.getElementById('last-update').textContent = healthData.lastUpdate;
+        }
+
+        /**
+         * 模擬增加步數的動作。
+         */
+        function addSteps() {
+            const stepInput = document.getElementById('step-input');
+            const stepsToAdd = parseInt(stepInput.value);
+
+            if (isNaN(stepsToAdd) || stepsToAdd <= 0) {
+                alertBox('請輸入有效的步數！', 'warning');
+                return;
+            }
+
+            healthData.stepsToday += stepsToAdd;
+            healthData.lastUpdate = new Date().toLocaleTimeString('zh-TW');
+            renderDashboard();
+            stepInput.value = '';
+            alertBox(`已新增 ${stepsToAdd.toLocaleString('zh-TW')} 步！`, 'success');
+        }
+
+        /**
+         * 模擬更新體重的動作。
+         */
+        function updateWeight() {
+            const weightInput = document.getElementById('weight-input');
+            const newWeight = parseFloat(weightInput.value);
+
+            if (isNaN(newWeight) || newWeight <= 0) {
+                alertBox('請輸入有效的體重！', 'warning');
+                return;
+            }
+
+            healthData.weight = newWeight;
+            healthData.lastUpdate = new Date().toLocaleTimeString('zh-TW');
+            renderDashboard();
+            weightInput.value = '';
+            alertBox(`體重已更新為 ${newWeight.toFixed(1)} 公斤。`, 'success');
+        }
+
+        /**
+         * 顯示自定義的訊息框，取代 alert()。
+         * @param {string} message 訊息內容
+         * @param {string} type 訊息類型 ('success', 'warning')
+         */
+        function alertBox(message, type) {
+            const alertElement = document.getElementById('custom-alert');
+            const bgColor = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-yellow-100 border-yellow-400 text-yellow-700';
+            
+            alertElement.className = `p-4 mb-4 rounded-lg border ${bgColor} fixed top-4 right-4 z-50 shadow-lg transition-opacity duration-300`;
+            alertElement.innerHTML = `<strong>${type === 'success' ? '成功' : '注意'}：</strong> ${message}`;
+            alertElement.style.opacity = '1';
+
+            setTimeout(() => {
+                alertElement.style.opacity = '0';
+            }, 3000);
+        }
+
+
+        // 頁面載入完成後執行
+        window.onload = function() {
+            renderDashboard();
+
+            // 設定事件監聽器
+            document.getElementById('add-steps-btn').addEventListener('click', addSteps);
+            document.getElementById('update-weight-btn').addEventListener('click', updateWeight);
+
+            // 確保 Enter 鍵在輸入框中也能觸發動作
+            document.getElementById('step-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addSteps();
+                }
+            });
+            document.getElementById('weight-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    updateWeight();
+                }
+            });
+        };
+    </script>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- 自定義訊息框 -->
+    <div id="custom-alert" class="p-4 mb-4 rounded-lg border fixed top-4 right-4 z-50 shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none">
+        <!-- 訊息將在此處顯示 -->
+    </div>
+
+    <!-- 標題 -->
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
+            健康數據追蹤
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+            資料來源：模擬數據 | 最後更新時間：<span id="last-update"></span>
+        </p>
+    </header>
+
+    <!-- 主儀表板網格 -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+
+        <!-- 1. 步數追蹤卡片 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-500">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                今日步數目標
+            </h2>
+            <div class="text-5xl font-bold text-blue-600 mb-2" id="steps-today">8500</div>
+            <p class="text-gray-500 mb-4">目標：<span id="steps-goal">10,000</span> 步</p>
+            
+            <!-- 進度條 -->
+            <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-blue-500" id="step-progress-text">
+                            進度
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-semibold inline-block text-blue-600">
+                            <span id="step-percentage"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                    <div id="step-progress-bar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center rounded-full transition-all duration-500"></div>
+                </div>
+            </div>
+            
+            <!-- 模擬操作區塊 -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <input type="number" id="step-input" placeholder="新增步數 (1000)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm mb-2" value="1000" min="100">
+                <button id="add-steps-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-md transition duration-200 shadow-md">
+                    + 記錄步數
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. 體重與 BMI 卡片 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-red-500">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3-.895-3-2 1.343-2 3-2zM9 20V8a3 3 0 016 0v12m-9 0h12a2 2 0 002-2v-2a2 2 0 00-2-2H9a2 2 0 00-2 2v2a2 2 0 002 2z"></path></svg>
+                體重追蹤 (公斤)
+            </h2>
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <p class="text-3xl font-bold text-red-600 leading-none" id="weight-value">75.2</p>
+                    <p class="text-sm text-gray-500 mt-1">目前體重</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-3xl font-bold text-red-600 leading-none" id="bmi-value">24.5</p>
+                    <p class="text-sm text-gray-500 mt-1">BMI</p>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">身高：<span id="height-value">178</span> 公分 (用於計算 BMI)</p>
+
+            <!-- 模擬操作區塊 -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <input type="number" id="weight-input" placeholder="更新體重 (75.0)" step="0.1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 text-sm mb-2" value="" min="30">
+                <button id="update-weight-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-md transition duration-200 shadow-md">
+                    更新體重
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. 睡眠紀錄卡片 -->
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-purple-500">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                昨晚睡眠時數
+            </h2>
+            <div class="text-5xl font-bold text-purple-600 mb-2" id="sleep-hours">7.5</div>
+            <p class="text-gray-500 mb-2">小時</p>
+            <p class="text-sm text-gray-500">
+                目標：<span id="sleep-goal">8.0</span> 小時 
+                <span id="sleep-status" class="font-medium text-xs"></span>
+            </p>
+
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <h3 class="text-lg font-medium text-gray-600 mb-2">睡眠建議</h3>
+                <ul class="text-sm text-gray-500 list-disc list-inside space-y-1">
+                    <li>保持固定的睡覺和起床時間。</li>
+                    <li>睡前一小時避免藍光刺激。</li>
+                    <li>創造一個黑暗、安靜且涼爽的睡眠環境。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4. 健康小撇步 (額外資訊卡片) -->
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-yellow-500 lg:col-span-3">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                每日健康建議
+            </h2>
+            <p class="text-gray-600 leading-relaxed">
+                研究顯示，規律的身體活動對於維持健康的體重和降低慢性疾病風險至關重要。即使只是每天增加幾千步，也能顯著改善您的心血管健康。請保持每日紀錄的習慣，並與您的目標進行比較！
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="text-center mt-12 text-gray-400 text-sm">
+        <p>© 2025 健康追蹤模擬系統。所有資料均為模擬用途。</p>
+    </footer>
+
+</body>
+</html>
